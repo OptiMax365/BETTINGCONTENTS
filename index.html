@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Betting Contents | The Multiversus Platform</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary: #ff2d55;
+            --primary-glow: rgba(255, 45, 85, 0.4);
+            --secondary: #5856d6;
+            --secondary-glow: rgba(88, 86, 214, 0.4);
+            --accent: #ff9500;
+            --accent-glow: rgba(255, 149, 0, 0.4);
+            --success: #30d158;
+            --danger: #ff3b30;
+            --bg-dark: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-card-hover: #1a1a28;
+            --bg-input: #1e1e2e;
+            --border: #2a2a3e;
+            --text-primary: #ffffff;
+            --text-secondary: #8e8e9e;
+            --text-muted: #5a5a6e;
+            --gold: #ffd700;
+            --silver: #c0c0c0;
+            --bronze: #cd7f32;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse at 20% 20%, rgba(88, 86, 214, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(255, 45, 85, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(255, 149, 0, 0.03) 0%, transparent 70%);
+            pointer-events: none; z-index: 0;
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+        .header {
+            position: sticky; top: 0; z-index: 1000;
+            background: rgba(10, 10, 15, 0.9); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border); padding: 0 20px;
+        }
+
+        .header-inner {
+            max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between;
+            height: 70px;
+        }
+
+        .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; cursor: pointer; }
+
+        .logo-icon {
+            width: 45px; height: 45px; background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            font-size: 22px; font-weight: 900; font-family: 'Orbitron', monospace; color: white;
+            box-shadow: 0 0 20px var(--primary-glow); position: relative; overflow: hidden;
+        }
+
+        .logo-icon::after {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.1) 50%, transparent 60%);
+            animation: logoShine 3s infinite;
+        }
+
+        @keyframes logoShine { 0%, 100% { transform: translateX(-100%) rotate(45deg); } 50% { transform: translateX(100%) rotate(45deg); } }
+
+        .logo-text { display: flex; flex-direction: column; }
+        .logo-text .brand {
+            font-family: 'Orbitron', monospace; font-size: 20px; font-weight: 900;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 2px;
+        }
+        .logo-text .tagline { font-size: 10px; color: var(--text-muted); letter-spacing: 3px; text-transform: uppercase; }
+
+        .header-nav { display: flex; align-items: center; gap: 8px; }
+
+        .nav-btn {
+            padding: 8px 18px; border: none; border-radius: 8px; font-family: 'Rajdhani', sans-serif;
+            font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s;
+            text-transform: uppercase; letter-spacing: 1px; position: relative;
+        }
+        .nav-btn.ghost { background: transparent; color: var(--text-secondary); }
+        .nav-btn.ghost:hover, .nav-btn.ghost.active { color: var(--text-primary); background: rgba(255,255,255,0.05); }
+        .nav-btn.ghost.active::after {
+            content: ''; position: absolute; bottom: -1px; left: 50%; transform: translateX(-50%);
+            width: 60%; height: 2px; background: var(--primary); border-radius: 1px;
+        }
+
+        .balance-display {
+            display: flex; align-items: center; gap: 8px; padding: 8px 16px;
+            background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px; margin-left: 12px;
+        }
+        .balance-display .coin-icon { font-size: 18px; }
+        .balance-display .amount { font-family: 'Orbitron', monospace; font-size: 15px; font-weight: 700; color: var(--gold); }
+        .balance-display .currency { font-size: 11px; color: var(--text-muted); }
+
+        .hero { position: relative; padding: 60px 20px 40px; text-align: center; overflow: hidden; }
+        .hero::before {
+            content: ''; position: absolute; top: -50%; left: 50%; transform: translateX(-50%);
+            width: 800px; height: 800px; background: radial-gradient(circle, rgba(255, 45, 85, 0.1) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .hero h1 { font-family: 'Orbitron', monospace; font-size: clamp(28px, 5vw, 52px); font-weight: 900; margin-bottom: 12px; line-height: 1.1; }
+        .hero h1 .gradient-text { background: linear-gradient(135deg, var(--primary), var(--accent), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { font-size: 16px; color: var(--text-secondary); max-width: 600px; margin: 0 auto 30px; }
+        .hero-stats { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
+        .hero-stat { text-align: center; }
+        .hero-stat .value { font-family: 'Orbitron', monospace; font-size: 24px; font-weight: 700; color: var(--primary); }
+        .hero-stat .label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px 40px; position: relative; z-index: 1; }
+
+        .section-tabs {
+            display: flex; gap: 6px; margin-bottom: 24px; background: var(--bg-card);
+            padding: 6px; border-radius: 14px; border: 1px solid var(--border); overflow-x: auto;
+        }
+        .section-tab {
+            flex: 1; min-width: 120px; padding: 12px 20px; border: none; border-radius: 10px; background: transparent;
+            color: var(--text-secondary); font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 600;
+            cursor: pointer; transition: all 0.3s; text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; text-align: center;
+        }
+        .section-tab:hover { color: var(--text-primary); background: rgba(255,255,255,0.03); }
+        .section-tab.active { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; box-shadow: 0 4px 15px var(--primary-glow); }
+
+        .page-section { display: none; animation: fadeIn 0.4s ease; }
+        .page-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .contents-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 20px; }
+        .content-card {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+            overflow: hidden; transition: all 0.3s; position: relative;
+        }
+        .content-card:hover { border-color: var(--primary); transform: translateY(-4px); box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+
+        .content-card-header { padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
+        .content-category { display: flex; align-items: center; gap: 8px; }
+        .content-category .icon { font-size: 18px; }
+        .content-category .name { font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary); }
+        .content-timer { display: flex; align-items: center; gap: 6px; font-family: 'Orbitron', monospace; font-size: 12px; color: var(--accent); }
+        .content-timer .dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .content-volume { font-size: 11px; color: var(--text-muted); }
+        .content-volume span { color: var(--gold); font-weight: 600; }
+
+        .content-options { padding: 20px; }
+        .content-option {
+            display: flex; align-items: center; justify-content: space-between; padding: 14px 18px;
+            background: var(--bg-input); border: 2px solid transparent; border-radius: 12px; cursor: pointer;
+            transition: all 0.3s; margin-bottom: 10px; position: relative; overflow: hidden;
+        }
+        .content-option:last-child { margin-bottom: 0; }
+        .content-option:hover { border-color: var(--primary); background: rgba(255, 45, 85, 0.05); }
+        .content-option.selected { border-color: var(--primary); background: rgba(255, 45, 85, 0.1); }
+        .content-option .progress-bar {
+            position: absolute; left: 0; top: 0; bottom: 0; background: linear-gradient(90deg, rgba(255,45,85,0.1), transparent);
+            transition: width 0.5s; pointer-events: none;
+        }
+
+        .option-info { display: flex; align-items: center; gap: 12px; z-index: 1; }
+        .option-emoji {
+            font-size: 28px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.05); border-radius: 10px;
+        }
+        .option-details .name { font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 700; }
+        .option-details .bets-count { font-size: 11px; color: var(--text-muted); }
+
+        .option-odds { text-align: right; z-index: 1; }
+        .option-odds .multiplier { font-family: 'Orbitron', monospace; font-size: 18px; font-weight: 700; color: var(--success); }
+        .option-odds .odds-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; }
+
+        .content-options.six-way { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .content-options.six-way .content-option { margin-bottom: 0; }
+        .content-options.six-way .option-emoji { font-size: 22px; width: 36px; height: 36px; }
+        .content-options.six-way .option-details .name { font-size: 13px; }
+        .content-options.six-way .option-odds .multiplier { font-size: 14px; }
+
+        .bs-divider { display: flex; align-items: center; justify-content: center; padding: 8px 0; }
+        .bs-badge {
+            font-family: 'Orbitron', monospace; font-size: 14px; font-weight: 900; color: var(--primary);
+            background: rgba(255, 45, 85, 0.15); padding: 4px 14px; border-radius: 20px; border: 1px solid rgba(255, 45, 85, 0.3);
+        }
+
+        .content-card-footer { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+        .bet-input-group { display: flex; align-items: center; gap: 8px; flex: 1; }
+        .bet-input-group .currency-symbol { color: var(--gold); font-weight: 600; }
+        .bet-input {
+            width: 100%; padding: 8px 12px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px;
+            color: var(--text-primary); font-family: 'Orbitron', monospace; font-size: 14px; outline: none; transition: border-color 0.3s;
+        }
+        .bet-input:focus { border-color: var(--primary); }
+        .place-bet-btn {
+            padding: 8px 20px; background: linear-gradient(135deg, var(--primary), #ff6b81); border: none; border-radius: 8px;
+            color: white; font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer;
+            transition: all 0.3s; text-transform: uppercase; letter-spacing: 1px; white-space: nowrap;
+        }
+        .place-bet-btn:hover { transform: scale(1.05); box-shadow: 0 4px 15px var(--primary-glow); }
+        .place-bet-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        .create-container { max-width: 700px; margin: 0 auto; }
+        .create-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 30px; margin-bottom: 20px; }
+        .create-card h2 { font-family: 'Orbitron', monospace; font-size: 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .form-input {
+            width: 100%; padding: 12px 16px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px;
+            color: var(--text-primary); font-family: 'Inter', sans-serif; font-size: 14px; outline: none; transition: border-color 0.3s;
+        }
+        .form-input:focus { border-color: var(--primary); }
+        .form-select {
+            width: 100%; padding: 12px 16px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px;
+            color: var(--text-primary); font-family: 'Inter', sans-serif; font-size: 14px; outline: none; cursor: pointer; appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%238e8e9e' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 16px center;
+        }
+        .form-select:focus { border-color: var(--primary); }
+        .competitor-rows { display: flex; flex-direction: column; gap: 10px; }
+        .competitor-row { display: flex; gap: 10px; align-items: center; }
+        .competitor-row .row-number {
+            width: 30px; height: 30px; background: var(--bg-input); border-radius: 8px; display: flex; align-items: center; justify-content: center;
+            font-family: 'Orbitron', monospace; font-size: 12px; font-weight: 700; color: var(--text-muted); flex-shrink: 0;
+        }
+        .competitor-row input { flex: 1; }
+        .competitor-row .emoji-pick {
+            width: 42px; height: 42px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px;
+            display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; transition: all 0.3s; flex-shrink: 0;
+        }
+        .competitor-row .emoji-pick:hover { border-color: var(--primary); transform: scale(1.1); }
+
+        .create-btn {
+            width: 100%; padding: 16px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border: none; border-radius: 12px;
+            color: white; font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s;
+            text-transform: uppercase; letter-spacing: 2px; margin-top: 10px;
+        }
+        .create-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px var(--primary-glow); }
+
+        .bets-list { display: flex; flex-direction: column; gap: 12px; }
+        .bet-item {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px;
+            display: flex; align-items: center; justify-content: space-between; transition: all 0.3s;
+        }
+        .bet-item:hover { border-color: var(--border); background: var(--bg-card-hover); }
+        .bet-item.won { border-left: 3px solid var(--success); }
+        .bet-item.lost { border-left: 3px solid var(--danger); }
+        .bet-item.pending { border-left: 3px solid var(--accent); }
+        .bet-info { display: flex; align-items: center; gap: 14px; }
+        .bet-info .emoji { font-size: 30px; }
+        .bet-details .content-name { font-family: 'Rajdhani', sans-serif; font-size: 15px; font-weight: 700; }
+        .bet-details .pick { font-size: 12px; color: var(--text-secondary); }
+        .bet-stake { text-align: right; }
+        .bet-stake .amount { font-family: 'Orbitron', monospace; font-size: 15px; font-weight: 700; }
+        .bet-stake .payout { font-size: 12px; margin-top: 2px; }
+        .bet-status { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .bet-status.won { background: rgba(48, 209, 88, 0.15); color: var(--success); }
+        .bet-status.lost { background: rgba(255, 59, 48, 0.15); color: var(--danger); }
+        .bet-status.pending { background: rgba(255, 149, 0, 0.15); color: var(--accent); }
+
+        .leaderboard-table { width: 100%; background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+        .leaderboard-table table { width: 100%; border-collapse: collapse; }
+        .leaderboard-table th {
+            padding: 14px 20px; text-align: left; font-family: 'Rajdhani', sans-serif; font-size: 12px; font-weight: 600;
+            color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border);
+            background: rgba(255,255,255,0.02);
+        }
+        .leaderboard-table td { padding: 14px 20px; font-size: 14px; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .leaderboard-table tr:last-child td { border-bottom: none; }
+        .leaderboard-table tr:hover td { background: rgba(255,255,255,0.02); }
+        .rank-badge { width: 30px; height: 30px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-family: 'Orbitron', monospace; font-size: 12px; font-weight: 700; }
+        .rank-badge.gold { background: rgba(255, 215, 0, 0.15); color: var(--gold); }
+        .rank-badge.silver { background: rgba(192, 192, 192, 0.15); color: var(--silver); }
+        .rank-badge.bronze { background: rgba(205, 127, 50, 0.15); color: var(--bronze); }
+        .rank-badge.normal { background: var(--bg-input); color: var(--text-muted); }
+
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); z-index: 2000;
+            align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-overlay.active { display: flex; animation: fadeIn 0.3s; }
+        .modal {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px;
+            padding: 30px; max-width: 500px; width: 100%; max-height: 80vh; overflow-y: auto;
+            animation: modalSlide 0.3s ease;
+        }
+        @keyframes modalSlide { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal h3 { font-family: 'Orbitron', monospace; font-size: 20px; margin-bottom: 20px; text-align: center; }
+        .modal-close { float: right; background: none; border: none; color: var(--text-muted); font-size: 24px; cursor: pointer; transition: color 0.3s; }
+        .modal-close:hover { color: var(--text-primary); }
+
+        .result-display { text-align: center; padding: 30px 0; }
+        .result-display .winner-emoji { font-size: 80px; animation: bounceIn 0.6s ease; }
+        @keyframes bounceIn { 0% { transform: scale(0); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+        .result-display .winner-name { font-family: 'Orbitron', monospace; font-size: 24px; font-weight: 900; margin: 16px 0 8px; background: linear-gradient(135deg, var(--gold), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .result-display .payout-text { font-size: 16px; color: var(--success); font-weight: 600; }
+        .result-display .loss-text { font-size: 16px; color: var(--danger); font-weight: 600; }
+
+        .toast-container { position: fixed; top: 80px; right: 20px; z-index: 3000; display: flex; flex-direction: column; gap: 10px; }
+        .toast { padding: 14px 20px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; display: flex; align-items: center; gap: 10px; min-width: 300px; animation: toastIn 0.4s ease; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+        .toast.success { border-left: 3px solid var(--success); }
+        .toast.error { border-left: 3px solid var(--danger); }
+        .toast.info { border-left: 3px solid var(--secondary); }
+        .toast .toast-icon { font-size: 20px; }
+        .toast .toast-msg { font-size: 13px; flex: 1; }
+        @keyframes toastIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+        .empty-state .icon { font-size: 60px; margin-bottom: 16px; }
+        .empty-state h3 { font-family: 'Rajdhani', sans-serif; font-size: 20px; color: var(--text-secondary); margin-bottom: 8px; }
+
+        .confetti-piece { position: fixed; width: 10px; height: 10px; z-index: 4000; pointer-events: none; }
+
+        .deposit-amounts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+        .dep-btn {
+            padding: 12px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px;
+            color: var(--text-primary); font-family: 'Orbitron', monospace; font-size: 14px; cursor: pointer; transition: all 0.2s;
+        }
+        .dep-btn:hover { border-color: var(--primary); background: rgba(255,45,85,0.1); }
+        .dep-btn.active { border-color: var(--success); background: rgba(48,209,88,0.15); color: var(--success); }
+
+        @media (max-width: 768px) {
+            .header-inner { flex-wrap: wrap; height: auto; padding: 10px 0; gap: 10px; }
+            .header-nav { width: 100%; justify-content: center; flex-wrap: wrap; }
+            .balance-display { margin-left: 0; }
+            .contents-grid { grid-template-columns: 1fr; }
+            .content-options.six-way { grid-template-columns: 1fr; }
+            .hero-stats { gap: 20px; }
+            .leaderboard-table { overflow-x: auto; }
+            .bet-item { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .bet-stake { text-align: left; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-inner">
+            <div class="logo" onclick="switchPage('contents')">
+                <div class="logo-icon">bs</div>
+                <div class="logo-text">
+                    <span class="brand">BETTINGCONTENTS</span>
+                    <span class="tagline">The Content Betting Platform</span>
+                </div>
+            </div>
+            <nav class="header-nav">
+                <button class="nav-btn ghost active" onclick="switchPage('contents')" id="nav-contents">🏟️ contents</button>
+                <button class="nav-btn ghost" onclick="switchPage('create')" id="nav-create">➕ Create</button>
+                <button class="nav-btn ghost" onclick="switchPage('mybets')" id="nav-mybets">📋 My Bets</button>
+                <button class="nav-btn ghost" onclick="switchPage('leaderboard')" id="nav-leaderboard">🏆 Rankings</button>
+                <button class="nav-btn ghost" onclick="switchPage('history')" id="nav-history">📊 History</button>
+                <div class="balance-display">
+                    <span class="coin-icon">💰</span>
+                    <div>
+                        <div class="amount" id="balance-display">0.00</div>
+                        <div class="currency">COINS</div>
+                    </div>
+                </div>
+                <button class="nav-btn primary" onclick="openDepositModal()">💳 Deposit</button>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1><span class="gradient-text">BET CONTENT</span></h1>
+        <p>Pick a side, place your wager, and watch the clash unfold. Items, concepts, and activities go head-to-head. You decide the winner.</p>
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <div class="value" id="stat-contents">0</div>
+                <div class="label">Active contents</div>
+            </div>
+            <div class="hero-stat">
+                <div class="value" id="stat-bets">0</div>
+                <div class="label">Total Bets</div>
+            </div>
+            <div class="hero-stat">
+                <div class="value" id="stat-volume">0</div>
+                <div class="label">Active Volume</div>
+            </div>
+            <div class="hero-stat">
+                <div class="value" id="stat-winners">0</div>
+                <div class="label">Winners Today</div>
+            </div>
+        </div>
+    </section>
+
+    <main class="container">
+        <div class="section-tabs">
+            <button class="section-tab active" onclick="filtercontents('all')">🔥 All</button>
+            <button class="section-tab" onclick="filtercontents('lifestyle')">🌿 Lifestyle</button>
+            <button class="section-tab" onclick="filtercontents('hobbies')">🎨 Hobbies</button>
+            <button class="section-tab" onclick="filtercontents('nature')">🌊 Nature</button>
+            <button class="section-tab" onclick="filtercontents('media')">📚 Media</button>
+            <button class="section-tab" onclick="filtercontents('gaming')">🎮 Gaming</button>
+            <button class="section-tab" onclick="filtercontents('activities')">🏃 Activities</button>
+            <button class="section-tab" onclick="filtercontents('concepts')">💡 Concepts</button>
+        </div>
+
+        <div class="page-section active" id="page-contents">
+            <div class="contents-grid" id="contents-grid"></div>
+        </div>
+
+        <div class="page-section" id="page-create">
+            <div class="create-container">
+                <div class="create-card">
+                    <h2>⚔️ Create New content</h2>
+                    <div class="form-group">
+                        <label>content Title</label>
+                        <input type="text" class="form-input" id="create-title" placeholder="e.g., Best Morning Routine">
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select class="form-select" id="create-category">
+                            <option value="lifestyle">🌿 Lifestyle</option>
+                            <option value="hobbies">🎨 Hobbies</option>
+                            <option value="nature">🌊 Nature</option>
+                            <option value="media">📚 Media</option>
+                            <option value="gaming">🎮 Gaming</option>
+                            <option value="activities">🏃 Activities</option>
+                            <option value="concepts">💡 Concepts</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>content Type</label>
+                        <select class="form-select" id="create-type" onchange="updateCompetitorFields()">
+                            <option value="2">2-Way content</option>
+                            <option value="6">6-Way content</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Competitors (Items / Activities)</label>
+                        <div class="competitor-rows" id="competitor-rows"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Duration (seconds)</label>
+                        <input type="number" class="form-input" id="create-duration" value="30" min="10" max="300">
+                    </div>
+                    <button class="create-btn" onclick="createcontent()">🚀 Launch content</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-section" id="page-mybets">
+            <h2 style="font-family:'Orbitron',monospace;font-size:22px;margin-bottom:20px;">📋 My Bets</h2>
+            <div class="bets-list" id="my-bets-list">
+                <div class="empty-state"><div class="icon">🎯</div><h3>No bets placed yet</h3><p>Deposit coins and head to contents!</p></div>
+            </div>
+        </div>
+
+        <div class="page-section" id="page-leaderboard">
+            <h2 style="font-family:'Orbitron',monospace;font-size:22px;margin-bottom:20px;">🏆 Leaderboard</h2>
+            <div class="leaderboard-table">
+                <table><thead><tr><th>Rank</th><th>Player</th><th>Wins</th><th>Total Wagered</th><th>Profit</th><th>Win Rate</th></tr></thead>
+                <tbody id="leaderboard-body"></tbody></table>
+            </div>
+        </div>
+
+        <div class="page-section" id="page-history">
+            <h2 style="font-family:'Orbitron',monospace;font-size:22px;margin-bottom:20px;">📊 Your Stats</h2>
+            <div class="history-stats" id="history-stats"></div>
+            <h3 style="font-family:'Rajdhani',sans-serif;font-size:16px;color:var(--text-secondary);margin-bottom:16px;text-transform:uppercase;letter-spacing:1px;">Recent Results</h3>
+            <div class="bets-list" id="history-list">
+                <div class="empty-state"><div class="icon">📊</div><h3>No history yet</h3><p>Your betting history will appear here.</p></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- RESULT MODAL -->
+    <div class="modal-overlay" id="result-modal"><div class="modal"><button class="modal-close" onclick="closeModal()">&times;</button><div id="modal-content"></div></div></div>
+
+    <!-- DEPOSIT MODAL -->
+    <div class="modal-overlay" id="deposit-modal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeDepositModal()">&times;</button>
+            <h3>💳 Add Coins to Wallet</h3>
+            <p style="text-align:center;color:var(--text-secondary);margin-bottom:20px;font-size:14px;">Deposit coins to start placing bets on your favorite matchups.</p>
+            <div class="deposit-amounts">
+                <button class="dep-btn" onclick="selectDeposit(100)">100</button>
+                <button class="dep-btn" onclick="selectDeposit(500)">500</button>
+                <button class="dep-btn" onclick="selectDeposit(1000)">1,000</button>
+                <button class="dep-btn" onclick="selectDeposit(5000)">5,000</button>
+                <button class="dep-btn" onclick="selectDeposit(10000)">10,000</button>
+                <button class="dep-btn" onclick="selectDeposit(25000)">25,000</button>
+            </div>
+            <div class="form-group">
+                <label>Custom Amount</label>
+                <input type="number" class="form-input" id="custom-deposit" placeholder="Enter amount" oninput="clearDepositSelection()">
+            </div>
+            <button class="create-btn" onclick="confirmDeposit()">✅ Confirm Deposit</button>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toast-container"></div>
+
+    <script>
+        let state = {
+            balance: 0,
+            contents: [],
+            myBets: [],
+            history: [],
+            selectedOptions: {},
+            nextId: 1,
+            totalBets: 0,
+            totalVolume: 0,
+            totalWinners: 0
+        };
+
+        const emojis = ['☕','🍵','📖','🎬','🏔️','🏖️','🎸','🎹','🍕','🍔','📷','📸','🏃','🌙','♟️','🃏','💿','🎧','✍️','⌨️','🚲','🛹','🎨','🖥️','🌧️','☀️','🌅','🌇','🍦','🍫','🧘','🏋️','🎻','🎺','📻','🎮','📱','💻','⌚','🎒','🪑','🛋️','🛏️','🚿','🛁','🧼','🧴','🪥','👓','👟','🧣','🎩','👜','💼','🎒','🖼️','🪴','🌵','🍂','🍁','🌸','🌺','🌻','🍄','🪨','💎','🕯️','🎪','🎭','🎨','🎵','🎸','🥁','🎹','🎤','🎧'];
+
+        function init() {
+            loadState();
+            if (state.contents.length === 0) seedcontents();
+            updateCompetitorFields();
+            rendercontents();
+            renderMyBets();
+            renderLeaderboard();
+            renderHistory();
+            updateBalance();
+            startTimers();
+        }
+
+        function seedcontents() {
+            const seedData = [
+                { title: "Hot Coffee bs Iced Tea", category: "lifestyle", type: 2, duration: 45, competitors: [{name:"Hot Coffee",emoji:"☕"},{name:"Iced Tea",emoji:"🍵"}], bets: [{oi:0,a:2500},{oi:1,a:2200}] },
+                { title: "Paper Books bs Digital Reads", category: "media", type: 2, duration: 35, competitors: [{name:"Paper Books",emoji:"📖"},{name:"Digital Reads",emoji:"📱"}], bets: [{oi:0,a:3100},{oi:1,a:1800}] },
+                { title: "Mountain Views bs Ocean Waves", category: "nature", type: 2, duration: 40, competitors: [{name:"Mountain Views",emoji:"🏔️"},{name:"Ocean Waves",emoji:"🌊"}], bets: [{oi:0,a:2700},{oi:1,a:2900}] },
+                { title: "Electric Guitar bs Acoustic Piano", category: "hobbies", type: 2, duration: 50, competitors: [{name:"Electric Guitar",emoji:"🎸"},{name:"Acoustic Piano",emoji:"🎹"}], bets: [{oi:0,a:1900},{oi:1,a:2400}] },
+                { title: "Slice of Pizza bs Burger Patty", category: "lifestyle", type: 2, duration: 30, competitors: [{name:"Slice of Pizza",emoji:"🍕"},{name:"Burger Patty",emoji:"🍔"}], bets: [{oi:0,a:3400},{oi:1,a:3200}] },
+                { title: "Film Photography bs Digital Shots", category: "hobbies", type: 2, duration: 55, competitors: [{name:"Film Camera",emoji:"📷"},{name:"Digital Sensor",emoji:"📸"}], bets: [{oi:0,a:1500},{oi:1,a:2800}] },
+                { title: "Morning Run bs Evening Walk", category: "activities", type: 2, duration: 35, competitors: [{name:"Morning Run",emoji:"🏃"},{name:"Evening Walk",emoji:"🌙"}], bets: [{oi:0,a:2200},{oi:1,a:1900}] },
+                { title: "Chess Strategy bs Card Bluffs", category: "gaming", type: 2, duration: 60, competitors: [{name:"Chess Board",emoji:"♟️"},{name:"Card Deck",emoji:"🃏"}], bets: [{oi:0,a:2600},{oi:1,a:2400}] },
+                { title: "Vinyl Records bs Streaming Audio", category: "media", type: 2, duration: 45, competitors: [{name:"Vinyl Record",emoji:"💿"},{name:"Streaming Audio",emoji:"🎧"}], bets: [{oi:0,a:1800},{oi:1,a:3100}] },
+                { title: "Fountain Pen bs Mechanical Keyboard", category: "hobbies", type: 2, duration: 40, competitors: [{name:"Fountain Pen",emoji:"✍️"},{name:"Mech Keyboard",emoji:"⌨️"}], bets: [{oi:0,a:2100},{oi:1,a:2500}] },
+                { title: "Road Cycling bs Urban Skateboarding", category: "activities", type: 2, duration: 50, competitors: [{name:"Road Cycling",emoji:"🚲"},{name:"Skateboarding",emoji:"🛹"}], bets: [{oi:0,a:1700},{oi:1,a:2300}] },
+                { title: "Canvas Painting bs Pixel Drawing", category: "hobbies", type: 2, duration: 45, competitors: [{name:"Canvas Paint",emoji:"🎨"},{name:"Pixel Art",emoji:"🖥️"}], bets: [{oi:0,a:2000},{oi:1,a:2100}] },
+                { title: "Rainy Days bs Sunny Days", category: "nature", type: 2, duration: 30, competitors: [{name:"Rainy Weather",emoji:"🌧️"},{name:"Sunny Weather",emoji:"☀️"}], bets: [{oi:0,a:1400},{oi:1,a:2600}] },
+                { title: "Yoga Mats bs Weight Benches", category: "activities", type: 2, duration: 40, competitors: [{name:"Yoga Practice",emoji:"🧘"},{name:"Weight Training",emoji:"🏋️"}], bets: [{oi:0,a:1800},{oi:1,a:2200}] },
+                { title: "Analog Clocks bs Smart Screens", category: "concepts", type: 2, duration: 50, competitors: [{name:"Analog Timepiece",emoji:"⌚"},{name:"Smart Display",emoji:"📱"}], bets: [{oi:0,a:1200},{oi:1,a:2800}] },
+                { title: "Board Games bs Video Consoles", category: "gaming", type: 2, duration: 60, competitors: [{name:"Tabletop Games",emoji:"🎲"},{name:"Game Consoles",emoji:"🎮"}], bets: [{oi:0,a:2100},{oi:1,a:3400}] }
+            ];
+
+            seedData.forEach(data => {
+                const optionTotals = new Array(data.competitors.length).fill(0);
+                data.bets.forEach(b => optionTotals[b.oi] += b.a);
+                state.contents.push({
+                    id: state.nextId++, title: data.title, category: data.category, type: data.type,
+                    duration: data.duration, timeLeft: data.duration + Math.floor(Math.random()*20),
+                    competitors: data.competitors, optionTotals: optionTotals,
+                    totalBets: optionTotals.reduce((a,b)=>a+b, 0),
+                    betCounts: new Array(data.competitors.length).fill(0).map(() => Math.floor(Math.random()*150)+30),
+                    resolved: false, resolvedAt: null
+                });
+            });
+        }
+
+        function calculateOdds(content, optionIndex) {
+            const total = content.optionTotals.reduce((a,b)=>a+b,0);
+            const onOption = content.optionTotals[optionIndex];
+            if(onOption === 0) return 2.0;
+            return Math.max(1.1, Math.round((total / onOption) * 100) / 100);
+        }
+
+        function rendercontents(filter = 'all') {
+            const grid = document.getElementById('contents-grid');
+            const filtered = filter === 'all' ? state.contents : state.contents.filter(b => b.category === filter);
+            const active = filtered.filter(b => !b.resolved);
+
+            if(active.length === 0) {
+                grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><div class="icon">🏟️</div><h3>No active contents</h3><p>Create a new matchup or check back later!</p><button class="nav-btn primary" style="margin-top:16px;" onclick="switchPage('create')">➕ Create content</button></div>`;
+                return;
+            }
+
+            grid.innerHTML = active.map(content => {
+                const isSixWay = content.type === 6;
+                const optionsHTML = content.competitors.map((comp, i) => {
+                    const odds = calculateOdds(content, i);
+                    const progress = content.totalBets > 0 ? (content.optionTotals[i] / content.totalBets * 100) : 0;
+                    const isSelected = state.selectedOptions[content.id] === i;
+                    return `
+                        <div class="content-option ${isSelected ? 'selected' : ''}" onclick="selectOption(${content.id}, ${i})">
+                            <div class="progress-bar" style="width:${progress}%"></div>
+                            <div class="option-info"><div class="option-emoji">${comp.emoji}</div>
+                            <div class="option-details"><div class="name">${comp.name}</div>
+                            <div class="bets-count">${content.betCounts[i]} bets · ${formatCoins(content.optionTotals[i])}</div></div></div>
+                            <div class="option-odds"><div class="multiplier">${odds.toFixed(2)}x</div><div class="odds-label">payout</div></div>
+                        </div>`;
+                }).join('');
+
+                const bsDivider = !isSixWay ? `<div class="bs-divider"><span class="bs-badge">⚡ bs</span></div>` : '';
+                const selectedIdx = state.selectedOptions[content.id];
+                const potentialWin = selectedIdx !== undefined ? calculateOdds(content, selectedIdx) : 0;
+
+                return `
+                    <div class="content-card" data-id="${content.id}" data-category="${content.category}">
+                        <div class="content-card-header">
+                            <div class="content-category"><span class="icon">${getCategoryIcon(content.category)}</span><span class="name">${content.title}</span></div>
+                            <div class="content-timer"><span class="dot"></span><span id="timer-${content.id}">${formatTime(content.timeLeft)}</span></div>
+                        </div>
+                        <div class="content-volume" style="padding:8px 20px 0;">💰 Total Wagered: <span>${formatCoins(content.totalBets)}</span></div>
+                        <div class="content-options ${isSixWay ? 'six-way' : ''}">${optionsHTML}</div>
+                        ${bsDivider}
+                        <div class="content-card-footer">
+                            <div class="bet-input-group"><span class="currency-symbol">💰</span><input type="number" class="bet-input" id="bet-input-${content.id}" placeholder="0.00" min="1" step="any"></div>
+                            <div style="text-align:right;margin-right:10px;"><div style="font-size:10px;color:var(--text-muted);">POTENTIAL WIN</div><div style="font-family:'Orbitron',monospace;font-size:14px;color:var(--success);" id="potential-${content.id}">${selectedIdx !== undefined ? formatCoins(potentialWin * 100) : '—'}</div></div>
+                            <button class="place-bet-btn" id="bet-btn-${content.id}" onclick="placeBet(${content.id})" ${selectedIdx === undefined ? 'disabled' : ''}>Place Bet</button>
+                        </div>
+                    </div>`;
+            }).join('');
+
+            active.forEach(content => {
+                const input = document.getElementById(`bet-input-${content.id}`);
+                if(input) input.addEventListener('input', () => updatePotentialWin(content.id));
+            });
+            document.getElementById('stat-contents').textContent = active.length;
+        }
+
+        function updatePotentialWin(contentId) {
+            const content = state.contents.find(b => b.id === contentId);
+            const selectedIdx = state.selectedOptions[contentId];
+            const input = document.getElementById(`bet-input-${contentId}`);
+            const display = document.getElementById(`potential-${contentId}`);
+            if(!content || selectedIdx === undefined || !input || !display) return;
+            const amount = parseFloat(input.value) || 0;
+            const odds = calculateOdds(content, selectedIdx);
+            display.textContent = (amount * odds) > 0 ? formatCoins(amount * odds) : '—';
+        }
+
+        function selectOption(contentId, optionIndex) {
+            state.selectedOptions[contentId] = optionIndex;
+            rendercontents(getCurrentFilter());
+        }
+
+        function placeBet(contentId) {
+            if(state.balance <= 0) {
+                showToast('Deposit coins to start betting!', 'error');
+                openDepositModal();
+                return;
+            }
+
+            const content = state.contents.find(b => b.id === contentId);
+            if(!content || content.resolved) { showToast('This content has ended!', 'error'); return; }
+
+            const selectedIdx = state.selectedOptions[contentId];
+            if(selectedIdx === undefined) { showToast('Please select an option first!', 'error'); return; }
+
+            const input = document.getElementById(`bet-input-${contentId}`);
+            const amount = parseFloat(input?.value);
+            if(!amount || amount <= 0) { showToast('Enter a valid amount!', 'error'); return; }
+            if(amount > state.balance) { showToast('Insufficient balance! Please deposit more.', 'error'); return; }
+
+            state.balance -= amount;
+            updateBalance();
+            content.optionTotals[selectedIdx] += amount;
+            content.totalBets += amount;
+            content.betCounts[selectedIdx] += 1;
+            state.totalBets += 1;
+            state.totalVolume += amount;
+
+            const odds = calculateOdds(content, selectedIdx);
+            const bet = { id: Date.now(), contentId: content.id, contentTitle: content.title, optionIndex: selectedIdx, optionName: content.competitors[selectedIdx].name, optionEmoji: content.competitors[selectedIdx].emoji, amount, odds, potentialWin: amount * odds, status: 'pending', timestamp: Date.now() };
+            state.myBets.unshift(bet);
+
+            showToast(`Bet placed! ${content.competitors[selectedIdx].emoji} ${content.competitors[selectedIdx].name} — ${formatCoins(amount)}`, 'success');
+            delete state.selectedOptions[contentId];
+            if(input) input.value = '';
+            saveState(); rendercontents(getCurrentFilter()); renderMyBets();
+        }
+
+        function resolvecontent(contentId) {
+            const content = state.contents.find(b => b.id === contentId);
+            if(!content || content.resolved) return;
+
+            const weights = content.optionTotals.map(t => Math.max(t, 100));
+            const totalWeight = weights.reduce((a,b)=>a+b,0);
+            let random = Math.random() * totalWeight;
+            let winnerIndex = 0;
+            for(let i=0; i<weights.length; i++) { random -= weights[i]; if(random <= 0) { winnerIndex=i; break; } }
+
+            content.resolved = true;
+            content.resolvedAt = Date.now();
+            content.winnerIndex = winnerIndex;
+
+            state.myBets.filter(b => b.contentId === contentId && b.status === 'pending').forEach(bet => {
+                if(bet.optionIndex === winnerIndex) {
+                    bet.status = 'won'; bet.actualWin = bet.potentialWin;
+                    state.balance += bet.actualWin; state.totalWinners += 1;
+                    showToast(`🎉 You won ${formatCoins(bet.actualWin)} on ${content.competitors[winnerIndex].name}!`, 'success');
+                    spawnConfetti();
+                } else {
+                    bet.status = 'lost'; bet.actualWin = 0;
+                    showToast(`😔 Lost ${formatCoins(bet.amount)} on ${content.title}`, 'error');
+                }
+            });
+
+            state.history.unshift({ contentTitle: content.title, winner: content.competitors[winnerIndex], timestamp: Date.now(), totalWagered: content.totalBets });
+            updateBalance(); saveState(); rendercontents(getCurrentFilter()); renderMyBets(); renderHistory();
+            showResultModal(content, winnerIndex);
+        }
+
+        function showResultModal(content, winnerIndex) {
+            const winner = content.competitors[winnerIndex];
+            const myBet = state.myBets.find(b => b.contentId === content.id && b.status !== 'pending');
+            const won = myBet && myBet.status === 'won';
+            document.getElementById('modal-content').innerHTML = `
+                <div class="result-display">
+                    <div class="winner-emoji">${winner.emoji}</div>
+                    <div class="winner-name">${winner.name} Wins!</div>
+                    <div style="margin:12px 0;color:var(--text-secondary);font-size:14px;">${content.title}</div>
+                    ${myBet ? (won ? `<div class="payout-text">🎉 You won ${formatCoins(myBet.actualWin)}!</div><div style="margin-top:8px;font-size:13px;color:var(--text-muted);">From a ${formatCoins(myBet.amount)} bet at ${myBet.odds.toFixed(2)}x</div>` : `<div class="loss-text">You lost ${formatCoins(myBet.amount)}</div><div style="margin-top:8px;font-size:13px;color:var(--text-muted);">Better luck next time!</div>`) : `<div style="margin-top:12px;font-size:14px;color:var(--text-secondary);">You didn't wager on this content</div>`}
+                    <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);"><div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">TOTAL WAGERED: ${formatCoins(content.totalBets)}</div><div style="font-size:12px;color:var(--text-muted);">TOTAL BETS: ${content.betCounts.reduce((a,b)=>a+b, 0)}</div></div>
+                </div>
+                <button class="create-btn" onclick="closeModal()" style="margin-top:20px;">Continue</button>`;
+            document.getElementById('result-modal').classList.add('active');
+        }
+
+        function closeModal() { document.getElementById('result-modal').classList.remove('active'); }
+
+        function startTimers() {
+            setInterval(() => {
+                state.contents.forEach(b => {
+                    if(!b.resolved && b.timeLeft > 0) {
+                        b.timeLeft--;
+                        const t = document.getElementById(`timer-${b.id}`);
+                        if(t) t.textContent = formatTime(b.timeLeft);
+                        if(b.timeLeft <= 0) resolvecontent(b.id);
+                    }
+                });
+            }, 1000);
+        }
+
+        function updateCompetitorFields() {
+            const type = parseInt(document.getElementById('create-type').value);
+            const container = document.getElementById('competitor-rows');
+            const defaults = ['⚡','🔥','💎','🌟','🎯','👑'];
+            container.innerHTML = '';
+            for(let i=0; i<type; i++) container.innerHTML += `<div class="competitor-row"><div class="row-number">${i+1}</div><input type="text" class="form-input" placeholder="Item or Activity name" id="comp-name-${i}"><div class="emoji-pick" onclick="cycleEmoji(this)" id="emoji-pick-${i}">${defaults[i]||'🎯'}</div></div>`;
+        }
+
+        function cycleEmoji(el) {
+            const idx = emojis.indexOf(el.textContent);
+            el.textContent = idx >= 0 ? emojis[(idx + 1) % emojis.length] : emojis[Math.floor(Math.random()*emojis.length)];
+        }
+
+        function createcontent() {
+            const title = document.getElementById('create-title').value.trim();
+            const category = document.getElementById('create-category').value;
+            const type = parseInt(document.getElementById('create-type').value);
+            const duration = parseInt(document.getElementById('create-duration').value) || 30;
+            if(!title) { showToast('Enter a content title!', 'error'); return; }
+
+            const competitors = [];
+            for(let i=0; i<type; i++) {
+                const name = document.getElementById(`comp-name-${i}`).value.trim();
+                const emoji = document.getElementById(`emoji-pick-${i}`).textContent;
+                if(!name) { showToast(`Enter a name for item ${i+1}!`, 'error'); return; }
+                competitors.push({name, emoji});
+            }
+
+            state.contents.unshift({ id: state.nextId++, title, category, type, duration, timeLeft: duration, competitors, optionTotals: new Array(type).fill(0), totalBets: 0, betCounts: new Array(type).fill(0), resolved: false, resolvedAt: null });
+            document.getElementById('create-title').value = ''; updateCompetitorFields();
+            showToast(`⚔️ "${title}" launched!`, 'success'); switchPage('contents'); rendercontents(); saveState();
+        }
+
+        function renderMyBets() {
+            const c = document.getElementById('my-bets-list');
+            if(state.myBets.length === 0) { c.innerHTML = `<div class="empty-state"><div class="icon">🎯</div><h3>No bets placed yet</h3><p>Deposit coins and head to contents!</p></div>`; return; }
+            c.innerHTML = [...state.myBets].sort((a,b)=> (a.status==='pending'?0:1) - (b.status==='pending'?0:1)).map(bet => `
+                <div class="bet-item ${bet.status}"><div class="bet-info"><div class="emoji">${bet.optionEmoji}</div><div class="bet-details"><div class="content-name">${bet.contentTitle}</div><div class="pick">Picked: ${bet.optionName} @ ${bet.odds.toFixed(2)}x</div></div></div>
+                <div class="bet-stake"><div class="amount">${formatCoins(bet.amount)}</div><div class="payout" style="color: ${bet.status==='won'?'var(--success)':bet.status==='lost'?'var(--danger)':'var(--accent)'};">${bet.status==='won'?`+${formatCoins(bet.actualWin)}`:bet.status==='lost'?`-${formatCoins(bet.amount)}`:`Pot: ${formatCoins(bet.potentialWin)}`}</div></div>
+                <span class="bet-status ${bet.status}">${bet.status}</span></div>`).join('');
+        }
+
+        function renderLeaderboard() {
+            const players = [
+                {name:"StrategyMind",wins:142,wagered:284500,profit:67200,rate:"68%"},{name:"CasualWager",wins:98,wagered:198000,profit:45800,rate:"62%"},
+                {name:"ItemHunter",wins:156,wagered:312000,profit:41200,rate:"58%"},{name:"You",wins:state.myBets.filter(b=>b.status==='won').length,wagered:state.myBets.reduce((s,b)=>s+b.amount,0),profit:state.myBets.filter(b=>b.status==='won').reduce((s,b)=>s+(b.actualWin||0),0)-state.myBets.reduce((s,b)=>s+b.amount,0),rate:state.myBets.length>0?Math.round(state.myBets.filter(b=>b.status==='won').length/state.myBets.length*100)+"%":"0%"},
+                {name:"ActivityAce",wins:78,wagered:156000,profit:28900,rate:"55%"},{name:"ConceptKing",wins:65,wagered:130000,profit:22100,rate:"52%"}
+            ].sort((a,b)=>b.profit-a.profit);
+
+            document.getElementById('leaderboard-body').innerHTML = players.map((p,i) => {
+                const rc = i===0?'gold':i===1?'silver':i===2?'bronze':'normal';
+                const isYou = p.name==='You';
+                return `<tr style="${isYou?'background:rgba(255,45,85,0.05);':''}"><td><span class="rank-badge ${rc}">${i+1}</span></td><td style="font-weight:${isYou?'700':'400'};${isYou?'color:var(--primary);':''}">${isYou?'👤 ':''}${p.name}</td><td>${p.wins}</td><td>${formatCoins(p.wagered)}</td><td style="color:${p.profit>=0?'var(--success)':'var(--danger)'};font-weight:600;">${p.profit>=0?'+':''}${formatCoins(p.profit)}</td><td>${p.rate}</td></tr>`;
+            }).join('');
+        }
+
+        function renderHistory() {
+            const won = state.myBets.filter(b=>b.status==='won'), lost = state.myBets.filter(b=>b.status==='lost'), pending = state.myBets.filter(b=>b.status==='pending');
+            const wagered = state.myBets.reduce((s,b)=>s+b.amount,0), wonAmt = won.reduce((s,b)=>s+(b.actualWin||0),0), profit = wonAmt - wagered;
+            document.getElementById('history-stats').innerHTML = `
+                <div class="history-stat-card"><div class="value">${state.myBets.length}</div><div class="label">Total Bets</div></div>
+                <div class="history-stat-card"><div class="value" style="color:var(--success);">${won.length}</div><div class="label">Won</div></div>
+                <div class="history-stat-card"><div class="value" style="color:var(--danger);">${lost.length}</div><div class="label">Lost</div></div>
+                <div class="history-stat-card"><div class="value" style="color:var(--accent);">${pending.length}</div><div class="label">Pending</div></div>
+                <div class="history-stat-card"><div class="value">${formatCoins(wagered)}</div><div class="label">Wagered</div></div>
+                <div class="history-stat-card"><div class="value" style="color:${profit>=0?'var(--success)':'var(--danger)'};">${profit>=0?'+':''}${formatCoins(profit)}</div><div class="label">Net Profit</div></div>`;
+            
+            document.getElementById('history-list').innerHTML = state.myBets.length === 0 ? `<div class="empty-state"><div class="icon">📊</div><h3>No history yet</h3></div>` :
+                state.myBets.slice(0,20).map(b=>`<div class="bet-item ${b.status}"><div class="bet-info"><div class="emoji">${b.optionEmoji}</div><div class="bet-details"><div class="content-name">${b.contentTitle}</div><div class="pick">${b.optionName} @ ${b.odds.toFixed(2)}x · ${new Date(b.timestamp).toLocaleString()}</div></div></div><span class="bet-status ${b.status}">${b.status}</span></div>`).join('');
+        }
+
+        function switchPage(page) {
+            document.querySelectorAll('.page-section').forEach(s=>s.classList.remove('active'));
+            document.querySelectorAll('.nav-btn.ghost').forEach(b=>b.classList.remove('active'));
+            document.getElementById(`page-${page}`).classList.add('active');
+            const nb = document.getElementById(`nav-${page}`); if(nb) nb.classList.add('active');
+            if(page==='mybets') renderMyBets();
+            if(page==='leaderboard') renderLeaderboard();
+            if(page==='history') renderHistory();
+        }
+
+        function getCurrentFilter() {
+            const a = document.querySelector('.section-tab.active');
+            if(!a) return 'all'; const t=a.textContent.trim().toLowerCase();
+            return t.includes('all')?'all':t.includes('life')?'lifestyle':t.includes('hobb')?'hobbies':t.includes('nat')?'nature':t.includes('med')?'media':t.includes('game')?'gaming':t.includes('act')?'activities':t.includes('con')?'concepts':'all';
+        }
+        function filtercontents(cat) {
+            document.querySelectorAll('.section-tab').forEach(t=>t.classList.remove('active')); event.target.classList.add('active'); rendercontents(cat);
+        }
+
+        function formatCoins(a) { return Number(a).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+        function formatTime(s) { return `${Math.floor(s/60).toString().padStart(2,'0')}:${(s%60).toString().padStart(2,'0')}`; }
+        function getCategoryIcon(c) { return {lifestyle:'🌿',hobbies:'🎨',nature:'🌊',media:'📚',gaming:'🎮',activities:'🏃',concepts:'💡'}[c]||'🎯'; }
+        function updateBalance() { document.getElementById('balance-display').textContent = formatCoins(state.balance); }
+
+        function showToast(msg, type='info') {
+            const c = document.getElementById('toast-container');
+            const icons = {success:'✅',error:'❌',info:'ℹ️'};
+            const t = document.createElement('div'); t.className=`toast ${type}`;
+            t.innerHTML=`<span class="toast-icon">${icons[type]}</span><span class="toast-msg">${msg}</span>`;
+            c.appendChild(t);
+            setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(100%)';t.style.transition='all 0.3s';setTimeout(()=>t.remove(),300);},3500);
+        }
+
+        function spawnConfetti() {
+            const colors=['#ff2d55','#5856d6','#ff9500','#30d158','#ffd700','#00d4ff'];
+            for(let i=0;i<50;i++){
+                const el=document.createElement('div'); el.className='confetti-piece';
+                el.style.left=Math.random()*100+'vw'; el.style.top='-10px';
+                el.style.background=colors[Math.floor(Math.random()*colors.length)];
+                el.style.borderRadius=Math.random()>0.5?'50%':'2px';
+                el.style.width=(Math.random()*8+4)+'px'; el.style.height=(Math.random()*8+4)+'px';
+                document.body.appendChild(el);
+                el.animate([{transform:`translate(0,0) rotate(0deg)`,opacity:1},{transform:`translate(${(Math.random()-0.5)*200}px,${window.innerHeight+50}px) rotate(${Math.random()*720}deg)`,opacity:0}],{duration:Math.random()*2+1500,easing:'cubic-bezier(0.25,0.46,0.45,0.94)'}).onfinish=()=>el.remove();
+            }
+        }
+
+        function saveState() {
+            try{localStorage.setItem('betversus_v2',JSON.stringify({balance:state.balance,myBets:state.myBets,history:state.history,totalBets:state.totalBets,totalVolume:state.totalVolume,totalWinners:state.totalWinners}));}catch(e){}
+        }
+        function loadState() {
+            try{const s=localStorage.getItem('betversus_v2');if(s){const d=JSON.parse(s);state.balance=d.balance??0;state.myBets=d.myBets??[];state.history=d.history??[];state.totalBets=d.totalBets??0;state.totalVolume=d.totalVolume??0;state.totalWinners=d.totalWinners??0;}}catch(e){}
+        }
+
+        // DEPOSIT SYSTEM
+        let selectedDepositAmt = 0;
+        function openDepositModal() { document.getElementById('deposit-modal').classList.add('active'); selectedDepositAmt = 0; document.querySelectorAll('.dep-btn').forEach(b=>b.classList.remove('active')); document.getElementById('custom-deposit').value=''; }
+        function closeDepositModal() { document.getElementById('deposit-modal').classList.remove('active'); }
+        function selectDeposit(amt) { selectedDepositAmt = amt; document.getElementById('custom-deposit').value=''; document.querySelectorAll('.dep-btn').forEach(b=>{b.classList.remove('active'); if(b.textContent.replace(',','')==amt.toString()) b.classList.add('active'); }); }
+        function clearDepositSelection() { selectedDepositAmt = 0; document.querySelectorAll('.dep-btn').forEach(b=>b.classList.remove('active')); }
+        function confirmDeposit() {
+            const custom = parseFloat(document.getElementById('custom-deposit').value);
+            const amt = custom > 0 ? custom : selectedDepositAmt;
+            if(!amt || amt <= 0) { showToast('Select or enter a valid amount!', 'error'); return; }
+            state.balance += amt;
+            updateBalance(); saveState();
+            closeDepositModal();
+            showToast(`💳 Successfully deposited ${formatCoins(amt)} coins!`, 'success');
+        }
+
+        init();
+    </script>
+</body>
+</html>
